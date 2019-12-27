@@ -44,11 +44,29 @@ function handleKeyboardEvent(evt) {
 		return;
 	}
 
+	if (evt.keyCode !== 16) {
 	pressedKeys.push(evt.keyCode);
+	}
 
 	if (pressedKeys.length === 3) {
 		console.log("3 saisies");
 		isHuman = true;
+		computeResult();
 	}
 }
+
+function computeResult() {
+	const isGoodpressedKeys = compareArrays(pressedKeys, pickedQuestion.codes);
+	console.log(isGoodpressedKeys);
+}
+
+function compareArrays(a, b) {
+	for (let i= 0; i<a.length; i++) {
+		if(a[i] !== b[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
 choseQuestion();
