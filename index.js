@@ -9,7 +9,7 @@ let CaptchaValues = [
 let questionDiv = document.querySelector('#question');
 let resultDiv = document.querySelector('#result');
 let answerDiv = document.querySelector('#answer');
-let textResult = document.querySelector('#textResult');
+let textResult = document.querySelector('#txtResult');
 
 let nbAvailableQuestion = CaptchaValues.length;
 let pickedQuestion = null;
@@ -29,6 +29,8 @@ function display(what, where) {
 }
 
 window.addEventListener('keydown', handleKeyboardEvent);
+textResult.addEventListener('keydown', checkTextResult);
+
 
 function handleKeyboardEvent(evt) {
 	console.log(evt.keyCode);
@@ -57,7 +59,11 @@ function handleKeyboardEvent(evt) {
 
 function computeResult() {
 	const isGoodpressedKeys = compareArrays(pressedKeys, pickedQuestion.codes);
-	console.log(isGoodpressedKeys);
+	if (isHuman && !isGoodpressedKeys) {
+		display('Vous êtes humain mais avez fait une erreur dans la saisie', resultDiv);
+	} else if(isHuman && isGoodpressedKeys){
+		display('Merci votre saisie est correcte. Veuillez indiquer votre résultat ci-dessous et appuyer sur Entrée', resultDiv);
+	}
 }
 
 function compareArrays(a, b) {
@@ -67,6 +73,21 @@ function compareArrays(a, b) {
 		}
 	}
 	return true;
+}
+
+function checkTextResult(evt) {
+	if(evt.keyCode >= 65 && evt.keyCode <= 90) {
+		resultInLetters.push(evt.key);
+	} else if(evt.keyCode === 8) {
+		resultInLetters.pop();
+		console.log(resultInLetters);
+	} else if(evt.keyCode === 13) {
+		if(resultInLetters.join('') === pickedQuestion.answer) {
+			display('Validation réussie :)',resultDiv);
+		} else {
+		display('Validation fausse', resultDiv);
+		}
+	} 
 }
 
 choseQuestion();
